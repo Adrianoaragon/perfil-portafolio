@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adriano</title>
+  <title>adriano</title>
   <link rel="stylesheet" href="src/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,7 +30,7 @@
   <!-- MAIN -->
   <main id="main" class="hidden">
 
-    <!-- PERFIL FLOTANTE (sin tarjeta) -->
+    <!-- PERFIL FLOTANTE -->
     <section class="profile-float">
       <div class="avatar-area">
         <div class="avatar-ring" id="avatar-ring">
@@ -40,11 +40,11 @@
         <span id="status-dot" class="status-dot offline"></span>
       </div>
       <h1 class="profile-name" id="profile-name">adriano</h1>
-      <p class="profile-bio" id="profile-bio">STREAMER & SYSTEM ENGINEER</p>
-      <p class="profile-loc" id="profile-loc">📍 COLOMBIA</p>
+      <p class="profile-bio"  id="profile-bio">STREAMER &amp; SYSTEM ENGINEER</p>
+      <p class="profile-loc"  id="profile-loc">📍 COLOMBIA</p>
     </section>
 
-    <!-- WIDGET ACTIVIDAD / SPOTIFY (glassmorphism) -->
+    <!-- ACTIVIDAD DISCORD (glassmorphism) -->
     <div id="activity-card" class="activity-card hidden">
       <div class="activity-inner">
         <div class="activity-imgs">
@@ -52,28 +52,32 @@
           <img id="act-small" src="" alt="" class="act-small hidden" />
         </div>
         <div class="activity-text">
-          <span class="activity-type" id="act-type"></span>
-          <span class="activity-name" id="act-name"></span>
+          <span class="activity-type"   id="act-type"></span>
+          <span class="activity-name"   id="act-name"></span>
           <span class="activity-detail" id="act-detail"></span>
           <span class="activity-state"  id="act-state"></span>
         </div>
       </div>
     </div>
 
-    <!-- ICONOS SOCIALES (sin cajita, solo SVG blanco) -->
+    <!-- REDES SOCIALES -->
     <section class="socials-row" id="socials-row"></section>
 
-    <!-- REPRODUCTOR -->
+    <!-- REPRODUCTOR CÁPSULA -->
     <div id="music-player" class="music-player hidden">
-      <!-- izquierda: portada + info -->
-      <img id="music-cover" class="music-cover" src="" alt="cover" />
+
+      <!-- Portada (resuelta via MusicBrainz) -->
+      <div id="music-cover-wrap" class="music-cover-wrap"></div>
+
+      <!-- Centro: título + barra -->
       <div class="music-center">
         <div class="music-meta">
           <span id="music-title"  class="music-title"></span>
           <span id="music-artist" class="music-artist"></span>
+          <span id="music-album"  class="music-album"></span>
         </div>
         <div class="music-progress-row">
-          <span id="music-current" class="music-time">0:00</span>
+          <span id="music-current"  class="music-time">0:00</span>
           <div class="music-bar-track" id="music-bar-track">
             <div class="music-bar-fill"  id="music-bar-fill"></div>
             <div class="music-bar-thumb" id="music-bar-thumb"></div>
@@ -81,7 +85,8 @@
           <span id="music-duration" class="music-time">0:00</span>
         </div>
       </div>
-      <!-- derecha: controles -->
+
+      <!-- Controles -->
       <div class="music-controls">
         <button class="mc-btn" id="btn-prev" title="Reiniciar">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
@@ -90,10 +95,11 @@
           <svg id="icon-play"  viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
-        <button class="mc-btn" id="btn-next" title="Siguiente">
+        <button class="mc-btn" id="btn-next" title="Final">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 5.5 3.89L8 18.14V9.86zM16 6h2v12h-2z"/></svg>
         </button>
       </div>
+
       <audio id="audio" loop></audio>
     </div>
 

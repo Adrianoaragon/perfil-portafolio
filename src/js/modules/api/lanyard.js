@@ -12,27 +12,40 @@ export function createLanyardClient(discordConfig) {
         const json = await response.json();
         if (!json.success) return;
 
-        const data = json.data;
-        const user = data.discord_user;
+        const data   = json.data;
+        const user   = data.discord_user;
         const status = data.discord_status || 'offline';
 
         if (typeof onProfile === 'function') {
+          // Decoración del avatar
+          const decoAsset = user?.avatar_decoration_data?.asset ?? null;
+
           onProfile({
-            name: (user?.global_name || user?.username || fallbackName || '').toLowerCase(),
-            avatar: user?.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'webp'}?size=160` : undefined,
-            avatarDecoration: user?.avatar_decoration_data?.asset
+            name:      (user?.global_name || user?.username || fallbackName || '').toLowerCase(),
+            avatar:    user?.avatar
+              ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'webp'}?size=160`
+              : undefined,
+                          avatarDecoration: user?.avatar_decoration_data?.asset
               ? `https://cdn.discordapp.com/avatar-decoration-presets/${user.avatar_decoration_data.asset}.png?size=96&passthrough=true`
               : undefined,
+            decoUrl:   decoAsset
+              ? `https://cdn.discordapp.com/avatar-decoration-presets/${decoAsset}.png?size=96&passthrough=true`
+              : null,
+            banner:    user?.banner
+              ? `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${user.banner.startsWith('a_') ? 'gif' : 'png'}?size=480`
+              : null,
+            accentColor: user?.accent_color ?? null,
             status,
           });
         }
 
         const activities = data.activities || [];
-        const activity = activities.find((item) => item.type === 2)
-          || activities.find((item) => item.type === 0)
-          || activities.find((item) => item.type === 1)
-          || activities.find((item) => item.type === 3)
-          || activities[0];
+        const activity =
+          activities.find(a => a.type === 2) ||  // Escuchando (Spotify, etc.)
+          activities.find(a => a.type === 0) ||  // Jugando
+          activities.find(a => a.type === 1) ||  // Streaming
+          activities.find(a => a.type === 3) ||  // Viendo
+          activities[0];
 
         if (activity && typeof onActivity === 'function') onActivity(activity);
       } catch (error) {
@@ -45,9 +58,7 @@ export function createLanyardClient(discordConfig) {
     await poll();
   };
 
-  const stop = () => {
-    if (timeoutId) clearTimeout(timeoutId);
-  };
+  const stop = () => { if (timeoutId) clearTimeout(timeoutId); };
 
   return { start, stop };
 }
