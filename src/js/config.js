@@ -74,3 +74,5 @@ const CONFIG = {
     favicon: "assets/avatar.jpg",
   },
 };
+
+export default CONFIG;

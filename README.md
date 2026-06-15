@@ -1,6 +1,6 @@
 # 🌐 Mi Perfil — Guía de configuración
 
-## Estructura recomendada
+## Estructura actual
 ```
 perfil-portafolio/
 ├── index.html
@@ -8,15 +8,32 @@ perfil-portafolio/
 ├── src/
 │   ├── js/
 │   │   ├── app.js
-│   │   └── config.js
+│   │   ├── config.js
+│   │   └── modules/
+│   │       ├── api/
+│   │       │   └── lanyard.js
+│   │       ├── dom.js
+│   │       ├── gate.js
+│   │       ├── player.js
+│   │       ├── renderer.js
+│   │       └── theme.js
 │   └── css/
 │       └── style.css
 └── assets/
-  ├── avatar.jpg
-  ├── cover.png
-  ├── horacero.mp3
-  └── bg.jpg
+    ├── avatar.jpg
+    ├── cover.png
+    ├── horacero.mp3
+    └── bg.jpg
 ```
+
+## Qué cambió
+El proyecto ya no depende de un solo `app.js` monolítico. `index.html` carga un bootstrap modular, `config.js` exporta la configuración, y el resto de la lógica vive en módulos pequeños por responsabilidad: DOM, tema, renderizado, reproductor, gate y Lanyard.
+
+## Flujo de arranque
+1. `index.html` carga `src/js/app.js` como módulo.
+2. `src/js/app.js` importa `config.js` y orquesta el resto.
+3. `theme.js`, `renderer.js`, `gate.js`, `player.js` y `api/lanyard.js` hacen el trabajo especializado.
+4. `dom.js` centraliza accesos al DOM para evitar repetir queries y facilitar futuros cambios.
 
 ## Por qué esta estructura
 La idea es que `index.html` quede solo como entrada, `src/js/` concentre la lógica y los datos, y `src/css/` concentre los estilos. Así puedes sumar secciones nuevas, componentes visuales o utilidades sin volver a mezclar todo en un solo archivo grande.
@@ -25,7 +42,7 @@ La idea es que `index.html` quede solo como entrada, `src/js/` concentre la lóg
 
 ## 1. Personalizar (`src/js/config.js`)
 
-Abre `src/js/config.js` y edita cada sección:
+Abre [src/js/config.js](src/js/config.js) y edita cada sección:
 
 ### Perfil
 ```js
@@ -59,7 +76,7 @@ socials: [
   // agrega o elimina los que quieras
 ],
 ```
-**Iconos disponibles:** `twitter`, `instagram`, `github`, `youtube`, `tiktok`, `twitch`, `spotify`, `steam`, `discord`, `link`
+**Iconos disponibles:** `twitter`, `instagram`, `github`, `youtube`, `tiktok`, `spotify`, `steam`, `discord`, `kick`, `link`
 
 ### Música
 Pon tu archivo `.mp3` en `assets/music.mp3` y luego:
@@ -104,16 +121,28 @@ Cuando quieras añadir nuevas secciones, sigue esta convención:
 ```text
 src/
 ├── js/
-│   ├── app.js        ← comportamiento general
+│   ├── app.js        ← bootstrap / orquestación
 │   ├── config.js     ← datos y ajustes
-│   ├── components/   ← bloques reutilizables del DOM
-│   └── utils/        ← helpers, formateo, lógica compartida
+│   ├── modules/      ← piezas reutilizables por responsabilidad
+│   │   ├── api/
+│   │   ├── dom.js
+│   │   ├── gate.js
+│   │   ├── player.js
+│   │   ├── renderer.js
+│   │   └── theme.js
+│   └── components/   ← opcional si luego separas UI más granular
 └── css/
-  ├── style.css     ← estilos base
-  └── sections/     ← estilos por bloque o sección
+    ├── style.css     ← estilos base
+    └── sections/     ← opcional si luego divides por bloque o sección
 ```
 
-Si el proyecto sigue creciendo, ahí ya tiene sentido separar por features o incluso migrar a un framework. Mientras tanto, esta organización es suficiente para mantener el sitio liviano y fácil de editar.
+Si el proyecto sigue creciendo, ahí ya tiene sentido separar por features o incluso migrar a un framework. Mientras tanto, esta organización es suficiente para mantener el sitio liviano, fácil de editar y simple de desplegar.
+
+### Orden recomendado para nuevos módulos
+1. Extrae primero la lógica que no toca el DOM.
+2. Después mueve el renderizado repetido a un módulo propio.
+3. Encapsula listeners y estado local en módulos como `player.js`.
+4. Mantén `app.js` como coordinador, no como lugar de lógica pesada.
 
 ---
 
@@ -141,6 +170,13 @@ vercel
 > **Nota sobre archivos de audio:** Vercel tiene límite de 100MB por archivo.
 > Si tu música supera eso, alójala en algún CDN externo y cambia `music.file` a la URL directa.
 
+### Desarrollo local
+Si quieres abrir el proyecto en local, usa un servidor estático. Por ejemplo:
+```bash
+npx serve .
+```
+o cualquier extensión/servidor que soporte ES modules y rutas relativas.
+
 ---
 
 ## 4. Dominio personalizado (opcional)
@@ -149,8 +185,16 @@ En Vercel: Settings → Domains → agrega tu dominio.
 ---
 
 ## Soporte de iconos adicionales
-Si quieres agregar una red que no esté en la lista, en `src/js/app.js` busca el objeto `ICONS` y agrega:
+Si quieres agregar una red que no esté en la lista, en [src/js/modules/renderer.js](src/js/modules/renderer.js) busca el objeto `ICONS` y agrega:
 ```js
 mirednueva: `<svg viewBox="0 0 24 24" fill="currentColor">...SVG aquí...</svg>`,
 ```
 Puedes obtener SVGs gratuitos en [simpleicons.org](https://simpleicons.org).
+
+## Notas de implementación
+- `src/js/config.js` exporta `CONFIG` como módulo ES.
+- `src/js/modules/api/lanyard.js` maneja el polling de Discord con un intervalo de 25 segundos.
+- `src/js/modules/player.js` encapsula estado de audio, play/pause y seekbar.
+- `src/js/modules/renderer.js` concentra el render de perfil, socials, actividad y música.
+- `src/js/modules/theme.js` aplica título, favicon y variables de tema.
+- `src/js/modules/gate.js` controla el click-to-enter.
