@@ -1,24 +1,31 @@
 # 🌐 Mi Perfil — Guía de configuración
 
-## Estructura
+## Estructura recomendada
 ```
-mi-perfil/
-├── index.html       ← no tocar salvo que quieras agregar secciones
-├── config.js        ← TODA la personalización está aquí
-├── style.css        ← estilos (puedes editar colores finos aquí)
-├── app.js           ← lógica (no tocar salvo que sepas JS)
+perfil-portafolio/
+├── index.html
 ├── README.md
+├── src/
+│   ├── js/
+│   │   ├── app.js
+│   │   └── config.js
+│   └── css/
+│       └── style.css
 └── assets/
-    ├── avatar.png   ← pon tu foto aquí
-    ├── music.mp3    ← pon tu canción aquí
-    └── bg.jpg       ← (opcional) fondo personalizado
+  ├── avatar.jpg
+  ├── cover.png
+  ├── horacero.mp3
+  └── bg.jpg
 ```
+
+## Por qué esta estructura
+La idea es que `index.html` quede solo como entrada, `src/js/` concentre la lógica y los datos, y `src/css/` concentre los estilos. Así puedes sumar secciones nuevas, componentes visuales o utilidades sin volver a mezclar todo en un solo archivo grande.
 
 ---
 
-## 1. Personalizar (config.js)
+## 1. Personalizar (`src/js/config.js`)
 
-Abre `config.js` y edita cada sección:
+Abre `src/js/config.js` y edita cada sección:
 
 ### Perfil
 ```js
@@ -91,7 +98,26 @@ theme: {
 
 ---
 
-## 2. Desplegar en Vercel
+## 2. Escalar el proyecto
+
+Cuando quieras añadir nuevas secciones, sigue esta convención:
+```text
+src/
+├── js/
+│   ├── app.js        ← comportamiento general
+│   ├── config.js     ← datos y ajustes
+│   ├── components/   ← bloques reutilizables del DOM
+│   └── utils/        ← helpers, formateo, lógica compartida
+└── css/
+  ├── style.css     ← estilos base
+  └── sections/     ← estilos por bloque o sección
+```
+
+Si el proyecto sigue creciendo, ahí ya tiene sentido separar por features o incluso migrar a un framework. Mientras tanto, esta organización es suficiente para mantener el sitio liviano y fácil de editar.
+
+---
+
+## 3. Desplegar en Vercel
 
 ### Opción A — Desde GitHub (recomendada)
 1. Crea un repositorio en GitHub y sube todos los archivos
@@ -117,13 +143,13 @@ vercel
 
 ---
 
-## 3. Dominio personalizado (opcional)
+## 4. Dominio personalizado (opcional)
 En Vercel: Settings → Domains → agrega tu dominio.
 
 ---
 
 ## Soporte de iconos adicionales
-Si quieres agregar una red que no esté en la lista, en `app.js` busca el objeto `ICONS` y agrega:
+Si quieres agregar una red que no esté en la lista, en `src/js/app.js` busca el objeto `ICONS` y agrega:
 ```js
 mirednueva: `<svg viewBox="0 0 24 24" fill="currentColor">...SVG aquí...</svg>`,
 ```
