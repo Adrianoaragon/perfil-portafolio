@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
     (profile) => {
       if (profile.avatar) dom.avatarImg.src = profile.avatar;
       if (profile.name) dom.profileName.textContent = profile.name;
+      if (profile.avatarDecoration) {
+        dom.avatarDeco.src = profile.avatarDecoration;
+        dom.avatarDeco.classList.remove('hidden');
+      } else {
+        dom.avatarDeco.removeAttribute('src');
+        dom.avatarDeco.classList.add('hidden');
+      }
       if (profile.status) {
         dom.statusDot.className = `status-dot ${profile.status}`;
         dom.statusDot.title = profile.status;

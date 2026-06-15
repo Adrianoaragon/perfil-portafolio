@@ -20,6 +20,9 @@ export function createLanyardClient(discordConfig) {
           onProfile({
             name: (user?.global_name || user?.username || fallbackName || '').toLowerCase(),
             avatar: user?.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'webp'}?size=160` : undefined,
+            avatarDecoration: user?.avatar_decoration_data?.asset
+              ? `https://cdn.discordapp.com/avatar-decoration-presets/${user.avatar_decoration_data.asset}.png?size=96&passthrough=true`
+              : undefined,
             status,
           });
         }
