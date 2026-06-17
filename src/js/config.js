@@ -61,6 +61,18 @@ const CONFIG = {
     subtext: null,
   },
 
+  /* ── CURSOR PERSONALIZADO ──────────────────────────────────────────── */
+  cursor: {
+    enabled: false,   // true para activar el cursor circular custom
+  },
+
+  /* ── EFECTOS (tilt 3D, typewriter, glitch) ───────────────────────── */
+  effects: {
+    tilt:       true,   // inclinación 3D en tarjetas al mover el mouse
+    typewriter: true,   // efecto de escritura en el nombre al entrar
+    glitch:     true,   // glitch al hacer hover sobre el avatar
+  },
+
   /* ── FONDO ───────────────────────────────────────────────────────────
    * type: "color" | "gradient" | "image" | "video"
    *

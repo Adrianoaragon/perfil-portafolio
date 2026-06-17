@@ -302,3 +302,51 @@ html, body {
   .music-player { padding: 8px 10px; gap: 9px; }
   .music-cover-wrap { width: 36px; height: 36px; }
 }
+
+/* ── CURSOR PERSONALIZADO ── */
+.custom-cursor {
+  position: fixed;
+  width: 28px; height: 28px;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .15s, height .15s, border-color .15s, background .15s;
+  mix-blend-mode: difference;
+}
+.custom-cursor.active {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.15);
+}
+body.cursor-enabled { cursor: none; }
+body.cursor-enabled a, body.cursor-enabled button { cursor: none; }
+
+/* ── TILT 3D (solo agrega perspectiva, el resto lo mueve GSAP) ── */
+.profile-float, .activity-card {
+  transform-style: preserve-3d;
+}
+
+/* ── GLITCH en avatar al hover ── */
+.avatar-area { cursor: pointer; }
+
+.avatar-img.glitching {
+  animation: avatarGlitch 0.35s steps(2, end);
+}
+@keyframes avatarGlitch {
+  0%   { filter: hue-rotate(0deg) brightness(1);   transform: translate(0,0); }
+  20%  { filter: hue-rotate(15deg) brightness(1.3); transform: translate(-2px, 1px); }
+  40%  { filter: hue-rotate(-10deg) brightness(0.8); transform: translate(2px, -1px); }
+  60%  { filter: hue-rotate(20deg) brightness(1.2); transform: translate(-1px, 0); }
+  80%  { filter: hue-rotate(-5deg) brightness(1);   transform: translate(1px, 1px); }
+  100% { filter: hue-rotate(0deg) brightness(1);    transform: translate(0,0); }
+}
+
+/* Cursor parpadeante para el typewriter del nombre */
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  margin-left: 2px;
+  animation: typingBlink 0.85s steps(1) infinite;
+}
+@keyframes typingBlink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
