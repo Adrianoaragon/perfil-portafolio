@@ -29,6 +29,12 @@ perfil-portafolio/
 ## Qué cambió
 El proyecto ya no depende de un solo `app.js` monolítico. `index.html` carga un bootstrap modular, `config.js` exporta la configuración, y el resto de la lógica vive en módulos pequeños por responsabilidad: DOM, tema, renderizado, reproductor, gate y Lanyard.
 
+### Ajustes recientes
+- Se añadió un botón de silencio en la esquina superior izquierda para controlar el audio sin salir del diseño principal.
+- El gate ahora responde de forma inmediata al click/tap en cualquier parte de la pantalla.
+- El reproductor recibe mejoras visuales para que los controles mantengan la estética del perfil.
+- La portada y la metadata de la canción intentan resolverse automáticamente desde MusicBrainz/Cover Art Archive, con fallback visual si la API externa no responde.
+
 ## Flujo de arranque
 1. `index.html` carga `src/js/app.js` como módulo.
 2. `src/js/app.js` importa `config.js` y orquesta el resto.
@@ -86,9 +92,12 @@ music: {
   file: "assets/music.mp3",
   title: "Nombre de la canción",
   artist: "Artista",
+  cover: null,          // si lo dejas en null, el sitio intenta resolver la portada automáticamente
   defaultVolume: 0.4,   // 0.0 a 1.0
 },
 ```
+
+Si la API externa de metadata falla, la página mantiene la portada por defecto y sigue reproduciendo la canción normalmente.
 
 ### Fondo
 ```js

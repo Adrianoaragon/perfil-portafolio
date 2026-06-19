@@ -28,6 +28,7 @@ import {
 import { setupGate }                                from './modules/gate.js';
 import { createPlayer }                             from './modules/player.js';
 import { createLanyardClient }                      from './modules/api/lanyard.js';
+import { fetchMusicMeta }                           from './modules/api/musicmeta.js';
 import { setupCursor }                              from './modules/cursor.js';
 import { applyTilt }                                from './modules/tilt.js';
 import { typewrite, triggerGlitch }                 from './modules/typewriter.js';
@@ -36,7 +37,7 @@ const dom     = createDom();
 const player  = createPlayer(dom, CONFIG.music);
 const lanyard = createLanyardClient(CONFIG.discord);
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // ── Núcleo ──────────────────────────────────────────────────────────
   applyTheme(CONFIG);
   renderBackground(CONFIG.background, dom);
@@ -44,6 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
   buildSocials(CONFIG.socials, dom);
   player.mount();
   setupCursor(CONFIG.cursor);
+
+  if (CONFIG.music?.enabled) {
+    const meta = await fetchMusicMeta(CONFIG.music.title, CONFIG.music.artist);
+    if (meta?.coverUrl) {
+      player.setCover(meta.coverUrl);
+    }
+    if (meta?.title || meta?.artist || meta?.album) {
+      player.setMeta({
+        title:  meta?.title  || CONFIG.music.title,
+        artist: meta?.artist || CONFIG.music.artist,
+        album:  meta?.album || null,
+      });
+    }
+  }
 
   setupGate(
     CONFIG.clickToEnter,

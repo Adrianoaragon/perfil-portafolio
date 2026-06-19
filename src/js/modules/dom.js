@@ -32,8 +32,11 @@ export function createDom() {
     btnPlay:       document.getElementById('btn-play'),
     btnPrev:       document.getElementById('btn-prev'),
     btnNext:       document.getElementById('btn-next'),
+    btnMute:       document.getElementById('btn-mute'),
     iconPlay:      document.getElementById('icon-play'),
     iconPause:     document.getElementById('icon-pause'),
+    iconVolumeOn:  document.getElementById('icon-volume-on'),
+    iconVolumeOff: document.getElementById('icon-volume-off'),
     audio:         document.getElementById('audio'),
   };
 

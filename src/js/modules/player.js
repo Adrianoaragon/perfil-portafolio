@@ -64,6 +64,23 @@ export function createPlayer(dom, music) {
 
   const togglePlay = () => (dom.audio.paused ? play() : pause());
 
+  const updateMuteState = () => {
+    const muted = dom.audio.muted;
+    if (dom.iconVolumeOn && dom.iconVolumeOff) {
+      dom.iconVolumeOn.classList.toggle('hidden', muted);
+      dom.iconVolumeOff.classList.toggle('hidden', !muted);
+    }
+    if (dom.btnMute) {
+      dom.btnMute.setAttribute('title', muted ? 'Activar sonido' : 'Silenciar');
+      dom.btnMute.setAttribute('aria-label', muted ? 'Activar sonido' : 'Silenciar');
+    }
+  };
+
+  const toggleMute = () => {
+    dom.audio.muted = !dom.audio.muted;
+    updateMuteState();
+  };
+
   /* ── Actualizar portada en el reproductor ── */
   const setCover = (url) => {
     const wrap = dom.musicCoverWrap;
@@ -96,15 +113,18 @@ export function createPlayer(dom, music) {
     dom.audio.src    = music.file;
     dom.audio.loop   = music.loop ?? true;
     dom.audio.volume = music.defaultVolume ?? 0.4;
+    dom.audio.muted  = false;
 
     // Metadata de fallback (config.js) — mostrar inmediatamente
     setMeta({ title: music.title, artist: music.artist });
     setCover(music.cover || null);   // null → icono por defecto mientras carga la API
+    updateMuteState();
 
     dom.musicPlayer.classList.remove('hidden');
 
     // Controles
     dom.btnPlay.addEventListener('click', togglePlay);
+    dom.btnMute?.addEventListener('click', toggleMute);
     dom.btnPrev.addEventListener('click', () => { dom.audio.currentTime = 0; });
     dom.btnNext.addEventListener('click', () => {
       if (isFinite(dom.audio.duration)) dom.audio.currentTime = dom.audio.duration - 0.1;
@@ -120,6 +140,7 @@ export function createPlayer(dom, music) {
 
     dom.audio.addEventListener('timeupdate',     updateProgress);
     dom.audio.addEventListener('loadedmetadata', updateProgress);
+    dom.audio.addEventListener('volumechange',   updateMuteState);
   };
 
   /* ── API pública ── */
