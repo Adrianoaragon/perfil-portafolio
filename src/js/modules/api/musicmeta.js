@@ -1,87 +1,80 @@
 /**
  * musicmeta.js
- * Resuelve metadata de canciones usando MusicBrainz + Cover Art Archive.
- * Ambas APIs son 100% gratuitas y no requieren API key.
- *
- * Flujo:
- *   1. MusicBrainz /recording?query= → encuentra el recording + release MBID
- *   2. Cover Art Archive /release/{mbid} → devuelve URL de portada
- *
- * Rate limit MusicBrainz: 1 req/s sin User-Agent, ~10/s con User-Agent.
- * Lo cumplimos fácil porque solo hacemos 1-2 llamadas al cargar la página.
+ * Resuelve portada y metadata usando la API de iTunes (Apple).
+ * 100% gratuita, sin API key, sin registro.
  */
 
-const MB_BASE  = 'https://musicbrainz.org/ws/2';
-const CAA_BASE = 'https://coverartarchive.org';
+const ITUNES_BASE = 'https://itunes.apple.com';
 
-// User-Agent requerido por MusicBrainz (formato: app/version contact)
-const UA = 'perfil-portafolio/1.0 (github.com/Adrianoaragon)';
+function normalize(s) {
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+    .replace(/[^a-z0-9\s]/g, '')                       // quita símbolos
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 /**
  * Busca metadata de una canción.
- * @param {string} title  - Título exacto o aproximado
+ * @param {string} title  - Título de la canción
  * @param {string} artist - Nombre del artista
- * @returns {Promise<{title, artist, album, year, coverUrl, mbid}|null>}
+ * @returns {Promise<{title, artist, album, year, coverUrl}|null>}
  */
 export async function fetchMusicMeta(title, artist) {
   if (!title) return null;
 
   try {
-    // ── Paso 1: buscar el recording en MusicBrainz ──────────────────────
-    const query   = encodeURIComponent(`recording:"${title}" AND artist:"${artist}"`);
-    const mbUrl   = `${MB_BASE}/recording?query=${query}&limit=5&fmt=json`;
+    const query = encodeURIComponent(`${artist || ''} ${title}`.trim());
+    const url   = `${ITUNES_BASE}/search?term=${query}&media=music&entity=song&limit=25`;
 
-    const mbRes   = await fetch(mbUrl, { headers: { 'User-Agent': UA } });
-    if (!mbRes.ok) throw new Error(`MusicBrainz ${mbRes.status}`);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`iTunes ${res.status}`);
 
-    const mbJson  = await mbRes.json();
-    const recs    = mbJson?.recordings;
-    if (!recs?.length) return null;
+    const json    = await res.json();
+    const results = json?.results;
+    if (!results?.length) return null;
 
-    // Elegir el primer resultado oficial con releases
-    const rec = recs.find(r => r.releases?.length) || recs[0];
-    const release = rec?.releases?.find(r => r.status === 'Official') || rec?.releases?.[0];
-    const mbid  = release?.id;
+    const tNorm = normalize(title);
+    const aNorm = normalize(artist);
 
-    const meta = {
-      title:    rec?.title    || title,
-      artist:   rec?.['artist-credit']?.[0]?.artist?.name || artist,
-      album:    release?.title || null,
-      year:     release?.date?.slice(0, 4) || null,
-      coverUrl: null,
-      mbid,
+    // El artista del resultado debe contener nuestro artista como
+    // PALABRA COMPLETA (separado por espacios o coma), no como substring.
+    // Esto evita falsos positivos de includes() en nombres compuestos.
+    const artistMatches = (resultArtist) => {
+      const rNorm = normalize(resultArtist);
+      const words = rNorm.split(/[\s,]+/);
+      const targetWords = aNorm.split(/\s+/);
+      // Todas las palabras del artista buscado deben aparecer como palabras
+      // completas en el artista del resultado
+      return targetWords.every(w => words.includes(w));
     };
 
-    // ── Paso 2: portada desde Cover Art Archive ─────────────────────────
-    if (mbid) {
-      meta.coverUrl = await fetchCoverArt(mbid);
-    }
+    const titleMatches = (resultTitle) => {
+      const rNorm = normalize(resultTitle);
+      // título exacto, o el resultado es el título + texto extra entre paréntesis
+      // (remix, live, feat, etc.) pero el núcleo coincide
+      return rNorm === tNorm || rNorm.startsWith(tNorm + ' ') || rNorm.startsWith(tNorm + '(');
+    };
 
-    return meta;
+    const match = results.find(r =>
+      artistMatches(r.artistName) && titleMatches(r.trackName)
+    );
+
+    // Si no hay coincidencia estricta de título+artista, no inventamos nada
+    if (!match) return null;
+
+    return {
+      title:    match.trackName      || title,
+      artist:   match.artistName     || artist,
+      album:    match.collectionName || null,
+      year:     match.releaseDate?.slice(0, 4) || null,
+      coverUrl: match.artworkUrl100
+        ? match.artworkUrl100.replace('100x100', '600x600')
+        : null,
+    };
   } catch (err) {
-    console.warn('[musicmeta] Error fetching metadata:', err);
-    return null;
-  }
-}
-
-/**
- * Obtiene la URL de la portada de un release.
- * CAA devuelve un JSON con thumbnails de 250 / 500 / 1200px.
- * @param {string} mbid - MusicBrainz release ID
- * @returns {Promise<string|null>}
- */
-async function fetchCoverArt(mbid) {
-  try {
-    const res  = await fetch(`${CAA_BASE}/release/${mbid}`, {
-      headers: { 'User-Agent': UA },
-    });
-    if (!res.ok) return null;
-
-    const json   = await res.json();
-    const front  = json?.images?.find(img => img.front) || json?.images?.[0];
-    // Preferimos 500px (buena calidad, sin ser enorme)
-    return front?.thumbnails?.['500'] || front?.thumbnails?.['250'] || front?.image || null;
-  } catch {
+    console.warn('[musicmeta] iTunes error:', err);
     return null;
   }
 }

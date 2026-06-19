@@ -10,7 +10,7 @@ const CONFIG = {
     username: "@xadrianoo_",
     avatar:   "assets/avatar.jpg",
     bio:      "Streamer & System Engineer.",
-    location: "Colombia 🇨🇴",
+    location: "Inyourheart",
   },
 
   /* ── DISCORD (Lanyard) ───────────────────────────────────────────────
@@ -38,7 +38,7 @@ const CONFIG = {
   ],
 
   /* ── MÚSICA ──────────────────────────────────────────────────────────
-   * La portada y metadata se resuelven automáticamente via MusicBrainz.
+   * La portada y metadata se resuelven automáticamente via iTunes.
    * Solo necesitas el archivo .mp3 en assets/ y el título + artista aquí.
    * "cover" solo es necesario si quieres forzar una portada local;
    * de lo contrario déjalo en null.
@@ -48,7 +48,7 @@ const CONFIG = {
     file:               "assets/horacero.mp3",
     title:              "Hora Cero",
     artist:             "Myke Towers",
-    cover:              null,    // null = resolver via MusicBrainz automáticamente
+    cover:              null,    // null = resolver via iTunes automáticamente
     autoplayAfterClick: true,
     loop:               true,
     defaultVolume:      0.4,     // 0.0 – 1.0
@@ -57,7 +57,7 @@ const CONFIG = {
   /* ── CLICK TO ENTER ─────────────────────────────────────────────────── */
   clickToEnter: {
     enabled: true,
-    text:    "click to enter",
+    text:    "Click to enter...",
     subtext: null,
   },
 

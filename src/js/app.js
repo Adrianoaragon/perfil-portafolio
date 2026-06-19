@@ -5,19 +5,15 @@
  * 1. Aplica tema y fondo
  * 2. Renderiza perfil estático (config.js) como fallback inmediato
  * 3. Construye socials y monta el reproductor (con fallback de metadata del config)
- * 4. Arranca la gate (click to enter)
+ * 4. Arranca el gate (click to enter) con partículas de fondo
  * 5. En paralelo:
  *    a) Lanyard → actualiza avatar, nombre, status, actividad
- *    b) MusicBrainz/CAA → resuelve portada y metadata real de la canción
- */
-
-/**
- * app.js — Bootstrap / Orquestador
+ *    b) iTunes → resuelve portada y metadata real de la canción
  */
 
 import CONFIG from './config.js';
-import { applyTheme }                               from './modules/theme.js';
-import { createDom }                                from './modules/dom.js';
+import { applyTheme }                from './modules/theme.js';
+import { createDom }                 from './modules/dom.js';
 import {
   renderBackground,
   renderStaticProfile,
@@ -25,17 +21,21 @@ import {
   buildSocials,
   renderActivity,
 } from './modules/renderer.js';
-import { setupGate }                                from './modules/gate.js';
-import { createPlayer }                             from './modules/player.js';
-import { createLanyardClient }                      from './modules/api/lanyard.js';
-import { fetchMusicMeta }                           from './modules/api/musicmeta.js';
-import { setupCursor }                              from './modules/cursor.js';
-import { applyTilt }                                from './modules/tilt.js';
-import { typewrite, triggerGlitch }                 from './modules/typewriter.js';
+import { setupGate }                 from './modules/gate.js';
+import { createPlayer }              from './modules/player.js';
+import { createLanyardClient }       from './modules/api/lanyard.js';
+import { fetchMusicMeta }            from './modules/api/musicmeta.js';
+import { setupCursor }               from './modules/cursor.js';
+import { applyTilt }                 from './modules/tilt.js';
+import { typewrite, triggerGlitch }  from './modules/typewriter.js';
+import { startGateParticles }        from './modules/gateParticles.js';
 
 const dom     = createDom();
 const player  = createPlayer(dom, CONFIG.music);
 const lanyard = createLanyardClient(CONFIG.discord);
+
+let stopGateParticles = () => {};
+let stopMainParticles = () => {};
 
 document.addEventListener('DOMContentLoaded', async () => {
   // ── Núcleo ──────────────────────────────────────────────────────────
@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   buildSocials(CONFIG.socials, dom);
   player.mount();
   setupCursor(CONFIG.cursor);
+
+  stopGateParticles = startGateParticles('gate-particles');
+  stopMainParticles = startGateParticles('main-particles');
 
   if (CONFIG.music?.enabled) {
     const meta = await fetchMusicMeta(CONFIG.music.title, CONFIG.music.artist);
@@ -65,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dom,
     () => player.play(),
     () => {
+      stopGateParticles();
       dom.showMain();
       runEntranceEffects();
     },

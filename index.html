@@ -1,39 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>adriano</title>
+  <title>Adriano</title>
   <link rel="stylesheet" href="src/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/old-english-text-mt" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
+
 <body>
 
   <!-- CURSOR PERSONALIZADO (opcional, activar en config.js) -->
   <div class="custom-cursor hidden" id="custom-cursor"></div>
-  
+
   <!-- GATE -->
   <div id="gate">
+    <canvas id="gate-particles"></canvas>
     <div class="gate-inner">
-      <div class="gate-rings">
-        <div class="ring r1"></div>
-        <div class="ring r2"></div>
-        <div class="ring r3"></div>
-      </div>
-      <p class="gate-text">click to enter</p>
+      <p class="gate-text">Click to enter...</p>
     </div>
   </div>
 
   <!-- FONDO -->
   <div id="bg-layer"></div>
   <div id="bg-overlay"></div>
+  <canvas id="main-particles"></canvas>
 
   <button class="top-audio-btn" id="btn-mute" aria-label="Silenciar" title="Silenciar">
-    <svg id="icon-volume-on" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 19 12a7 7 0 0 1-5 6.71v2.06A9 9 0 0 0 21 12a9 9 0 0 0-7-8.77z"/></svg>
-    <svg id="icon-volume-off" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.18l2.45 2.45A4.4 4.4 0 0 0 16.5 12zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.9 8.9 0 0 0 21 12c0-4.28-2.99-7.86-7-8.76V3.23A9.9 9.9 0 0 1 21 12zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A9 9 0 0 1 6.55 18.5L4.27 20 3 18.73l15-15L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>
+    <svg id="icon-volume-on" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 19 12a7 7 0 0 1-5 6.71v2.06A9 9 0 0 0 21 12a9 9 0 0 0-7-8.77z" />
+    </svg>
+    <svg id="icon-volume-off" viewBox="0 0 24 24" fill="currentColor" class="hidden">
+      <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.18l2.45 2.45A4.4 4.4 0 0 0 16.5 12zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.9 8.9 0 0 0 21 12c0-4.28-2.99-7.86-7-8.76V3.23A9.9 9.9 0 0 1 21 12zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A9 9 0 0 1 6.55 18.5L4.27 20 3 18.73l15-15L4.27 3zM12 4 9.91 6.09 12 8.18V4z" />
+    </svg>
   </button>
 
   <!-- MAIN -->
@@ -49,8 +53,14 @@
         <span id="status-dot" class="status-dot offline"></span>
       </div>
       <h1 class="profile-name" id="profile-name">adriano</h1>
-      <p class="profile-bio"  id="profile-bio">STREAMER &amp; SYSTEM ENGINEER</p>
-      <p class="profile-loc"  id="profile-loc">📍 COLOMBIA</p>
+      <p class="profile-bio" id="profile-bio">STREAMER &amp; SYSTEM ENGINEER</p>
+      <p class="profile-loc" id="profile-loc">
+        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span id="profile-loc-text">INYOURHEART</span>
+      </p>
     </section>
 
     <!-- ACTIVIDAD DISCORD (glassmorphism) -->
@@ -61,10 +71,10 @@
           <img id="act-small" src="" alt="" class="act-small hidden" />
         </div>
         <div class="activity-text">
-          <span class="activity-type"   id="act-type"></span>
-          <span class="activity-name"   id="act-name"></span>
+          <span class="activity-type" id="act-type"></span>
+          <span class="activity-name" id="act-name"></span>
           <span class="activity-detail" id="act-detail"></span>
-          <span class="activity-state"  id="act-state"></span>
+          <span class="activity-state" id="act-state"></span>
         </div>
       </div>
     </div>
@@ -72,36 +82,33 @@
     <!-- REDES SOCIALES -->
     <section class="socials-row" id="socials-row"></section>
 
-    <!-- REPRODUCTOR CÁPSULA -->
+    <!-- REPRODUCTOR -->
     <div id="music-player" class="music-player hidden">
 
-      <!-- Portada (resuelta via MusicBrainz) -->
       <div id="music-cover-wrap" class="music-cover-wrap"></div>
 
-      <!-- Centro: título + barra -->
       <div class="music-center">
         <div class="music-meta">
-          <span id="music-title"  class="music-title"></span>
+          <span id="music-title" class="music-title"></span>
           <span id="music-artist" class="music-artist"></span>
-          <span id="music-album"  class="music-album"></span>
+          <span id="music-album" class="music-album"></span>
         </div>
         <div class="music-progress-row">
-          <span id="music-current"  class="music-time">0:00</span>
+          <span id="music-current" class="music-time">0:00</span>
           <div class="music-bar-track" id="music-bar-track">
-            <div class="music-bar-fill"  id="music-bar-fill"></div>
+            <div class="music-bar-fill" id="music-bar-fill"></div>
             <div class="music-bar-thumb" id="music-bar-thumb"></div>
           </div>
           <span id="music-duration" class="music-time">0:00</span>
         </div>
       </div>
 
-      <!-- Controles -->
       <div class="music-controls">
         <button class="mc-btn" id="btn-prev" title="Reiniciar">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
         </button>
         <button class="mc-btn mc-play" id="btn-play">
-          <svg id="icon-play"  viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
         <button class="mc-btn" id="btn-next" title="Final">
@@ -116,4 +123,5 @@
 
   <script type="module" src="src/js/app.js"></script>
 </body>
+
 </html>
