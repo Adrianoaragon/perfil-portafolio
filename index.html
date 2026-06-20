@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="src/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link href="https://fonts.cdnfonts.com/css/old-english-text-mt" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
@@ -31,12 +32,29 @@
   <div id="bg-overlay"></div>
   <canvas id="main-particles"></canvas>
 
+  <!-- INDICADOR DE VISTA ACTUAL -->
+  <div class="view-badge">
+    <span class="view-dot"></span>
+    <span>ACTIVIDAD</span>
+  </div>
+
+  <!-- BOTÓN A PORTAFOLIO -->
+  <a href="#" class="view-switch-btn" id="btn-portfolio" title="Ver portafolio">
+    <span>Portafolio</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M5 12h14M13 5l7 7-7 7" />
+    </svg>
+  </a>
+
   <button class="top-audio-btn" id="btn-mute" aria-label="Silenciar" title="Silenciar">
     <svg id="icon-volume-on" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 19 12a7 7 0 0 1-5 6.71v2.06A9 9 0 0 0 21 12a9 9 0 0 0-7-8.77z" />
+      <path
+        d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 19 12a7 7 0 0 1-5 6.71v2.06A9 9 0 0 0 21 12a9 9 0 0 0-7-8.77z" />
     </svg>
     <svg id="icon-volume-off" viewBox="0 0 24 24" fill="currentColor" class="hidden">
-      <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.18l2.45 2.45A4.4 4.4 0 0 0 16.5 12zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.9 8.9 0 0 0 21 12c0-4.28-2.99-7.86-7-8.76V3.23A9.9 9.9 0 0 1 21 12zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A9 9 0 0 1 6.55 18.5L4.27 20 3 18.73l15-15L4.27 3zM12 4 9.91 6.09 12 8.18V4z" />
+      <path
+        d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.18l2.45 2.45A4.4 4.4 0 0 0 16.5 12zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.9 8.9 0 0 0 21 12c0-4.28-2.99-7.86-7-8.76V3.23A9.9 9.9 0 0 1 21 12zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A9 9 0 0 1 6.55 18.5L4.27 20 3 18.73l15-15L4.27 3zM12 4 9.91 6.09 12 8.18V4z" />
     </svg>
   </button>
 
@@ -55,9 +73,10 @@
       <h1 class="profile-name" id="profile-name">adriano</h1>
       <p class="profile-bio" id="profile-bio">STREAMER &amp; SYSTEM ENGINEER</p>
       <p class="profile-loc" id="profile-loc">
-        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/>
-          <circle cx="12" cy="10" r="3"/>
+        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
         </svg>
         <span id="profile-loc-text">INYOURHEART</span>
       </p>
@@ -105,14 +124,22 @@
 
       <div class="music-controls">
         <button class="mc-btn" id="btn-prev" title="Reiniciar">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+          </svg>
         </button>
         <button class="mc-btn mc-play" id="btn-play">
-          <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" class="hidden">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
         </button>
         <button class="mc-btn" id="btn-next" title="Final">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 5.5 3.89L8 18.14V9.86zM16 6h2v12h-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18l8.5-6L6 6v12zm2-8.14 5.5 3.89L8 18.14V9.86zM16 6h2v12h-2z" />
+          </svg>
         </button>
       </div>
 
